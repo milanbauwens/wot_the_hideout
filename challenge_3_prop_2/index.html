@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>CRT</title>
+        <style>
+            * {
+                margin: 0;
+                padding: 0;
+                box-sizing: border-box;
+            }
+            body {
+                background-color: #000;
+                overflow: hidden;
+            }
+            #black-screen {
+                width: 100vw;
+                height: 100vh;
+                background-color: #000;
+            }
+            .fullscreen {
+                width: 100vw;
+                height: 100vh;
+                display: absolute;
+                inset: 0;
+                object-fit: cover;
+            }
+            .hidden {
+                display: none;
+            }
+        </style>
+    </head>
+    <body>
+        <video
+            autoplay
+            muted
+            loop
+            playsinline
+            class="fullscreen hidden"
+            id="looped"
+        >
+            <source src="/static_sm.mp4" type="video/mp4" />
+        </video>
+        <video autoplay muted playsinline class="fullscreen hidden" id="single">
+            <source src="/hostage.mp4" type="video/mp4" />
+        </video>
+        <img
+            src="/lockscreen.png"
+            alt="lockscreen"
+            class="fullscreen hidden"
+            id="image"
+        />
+        <script src="/socket.io/socket.io.js"></script>
+        <script>
+            var socket = io();
+            const looped = document.getElementById("looped");
+            const single = document.getElementById("single");
+            const image = document.getElementById("image");
+
+            socket.on("message", (msg) => {
+                if (msg === "static") {
+                    looped.classList.remove("hidden");
+                    image.classList.add("hidden");
+                    single.classList.add("hidden");
+                } else if (msg === "locked") {
+                    looped.classList.add("hidden");
+                    image.classList.remove("hidden");
+                    single.classList.add("hidden");
+                } else if (msg === "hostage") {
+                    looped.classList.add("hidden");
+                    image.classList.add("hidden");
+                    single.classList.remove("hidden");
+                } else if (msg === "black") {
+                    looped.classList.add("hidden");
+                    image.classList.add("hidden");
+                    single.classList.add("hidden");
+                }
+            });
+        </script>
+    </body>
+</html>
