@@ -1,4 +1,4 @@
-# Escape room prop Light
+# Escape room prop CRT
 
 ## Author
 
