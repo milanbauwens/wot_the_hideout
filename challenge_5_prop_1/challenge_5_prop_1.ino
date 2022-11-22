@@ -171,8 +171,8 @@ void manageTempSlider() {
   temp1 = floor(analogRead(adcPin) /33.8);
   temp2 = floor(analogRead(adcPin2) /10.3);
 
-  #define MY_SIZE 31
-  int temp2Options[MY_SIZE] ={0, 4, 8, 11, 15, 19, 24, 26, 29, 30, 34, 37, 41, 44, 48, 52, 54, 58, 62, 66, 68, 70, 73, 76, 78, 80, 84, 89, 92, 95, 98};
+  #define MY_SIZE 17
+  int temp2Options[MY_SIZE] ={0, 6, 12, 18, 24, 30, 36, 42, 48, 54, 60, 66, 72, 78, 84, 90, 96};
   unsigned long currentMillis2 = millis();
 
   int i = 0;
