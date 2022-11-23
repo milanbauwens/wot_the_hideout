@@ -153,7 +153,6 @@ void fusebox()
   }
 
   if (!SOLVED) {
-    isReset.setValue(true);
     if (LIGHT) {
       prop.sendOver("Disconnect");
       prop.sendOver("Disconnect");
@@ -221,6 +220,10 @@ void InboxMessage::run(String a) {
     Serial.println("The lamp is off");
     prop.sendRequ("lamp -> lampoff");
     prop.sendDone(a);
+  } else if (a == "reset") {
+    SENDPROPS = false;
+    isReset.setValue(true);
+    prop.sendAllData();
   }
   else
   {
