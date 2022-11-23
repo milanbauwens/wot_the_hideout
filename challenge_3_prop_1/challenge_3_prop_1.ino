@@ -40,8 +40,8 @@ String current_ids[AMOUNT_READERS];
 
 // Ligths on
 
-bool lightsOn = false;
 bool frequencySolved = false;
+bool SENDPROPS =  false;
 
 PropDataLogical isReset(u8"isReset");
 
@@ -118,10 +118,8 @@ void loop() {
   prop.loop();
 
   // check rfid prop
-  if (lightsOn) {
-    if (frequencySolved) {
-      rfidAction.check();
-    }
+  if (frequencySolved) {
+    rfidAction.check();
   }
 }
 
@@ -173,7 +171,10 @@ void rfid()
   // Check if the readings are correct
   if((current_ids[0] == CORRECT_IDS[0]) && (current_ids[1] == CORRECT_IDS[1]) && (current_ids[2] == CORRECT_IDS[2])) {
     isSolved = true;
-    prop.sendOver("RFID_Prikbord");
+    if (!SENDPROPS) {
+      prop.sendOver("RFID_Prikbord");
+      SENDPROPS = true;
+    }
   }
 }
 
@@ -187,18 +188,13 @@ void InboxMessage::run(String a) {
   else if (a == u8"reset-mcu")
   {
     prop.resetMcu();
-  }
-  else if (a == "lightsOn:true") {
-    lightsOn = true;
-    isReset.setValue(false);
-    prop.sendAllData();
   } else if (a == "frequencySolved") {
     frequencySolved = true;
     isReset.setValue(false);
     prop.sendAllData();
   } else if (a == "reset") {
-    lightsOn = false;
     frequencySolved = false;
+    SENDPROPS = false;
     isReset.setValue(true);
     prop.sendAllData();
   }
