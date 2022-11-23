@@ -105,9 +105,6 @@ void setup()
   // lcd.print("Frequency");  // print a message to the LCD
   // lcd.setCursor(4, 1);  // set the cursor to column 0, line 1
 
-  if(SEND_OVER){
-    prop.sendOver("Frequency");
-  }
 }
 
 /* ---------------
@@ -163,6 +160,9 @@ void loop()
   if(!PostersSolved){
     lcd.clear();
     lcd.setRGB(0, 0, 0);
+  }
+  if(SEND_OVER){
+    prop.sendOver("Frequency");
   }
 
 }
