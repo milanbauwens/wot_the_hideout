@@ -28,7 +28,6 @@ const char *passphrase = "enterthegame"; // the passphrase of the network
 const int propNumber = 141;
 
 // morse variables
-bool lightsOn = false;
 bool videoIsSynced = false;
 const int syncTime = 1000; // time that needs to pass till program is synced with video
 const int relay = 7;
@@ -133,7 +132,7 @@ void loop()
 
   // morse
   // loop morse code till the ventilation closes
-  if(lightsOn && videoIsSynced && !ventilationIsOpen) {
+  if(videoIsSynced && !ventilationIsOpen) {
     morse.check();
   }
 }
@@ -245,14 +244,9 @@ void InboxMessage::run(String a) {
   }
   else if (a == u8"reset-mcu")
   {
-    prop.resetMcu();
+    prop.resetMcu(); 
   }
-    else if (a == "lightsOn:true")
-  {
-    lightsOn = true;
-  }
-  else if (a == "rfidSolved
-  :true")
+  else if (a == "rfidSolved:true")
   {
     propVideoSync.setValue(true);
 

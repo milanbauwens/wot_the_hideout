@@ -17,6 +17,7 @@ WifiProp prop(u8"challenge_5_prop_1", // as MQTT client id, should be unique per
  * --------------- */
 
 PropDataLogical ventIsOpen(u8"Vent is open");
+PropDataLogical isReset(u8"isReset");
 PropDataText rssi(u8"rssi");
 
 void manageTempSlider(); // define upcoming manageTempSlider method
@@ -87,6 +88,7 @@ void setup()
   Serial.println("Starting temp slider program!");
 
   prop.addData(&ventIsOpen);
+  prop.addData(&isReset);
   prop.addData(&rssi);
 
   prop.begin(InboxMessage::run); // this will start a loop to check for MQTT messages
@@ -155,6 +157,8 @@ void loop()
   rssi.setValue(WiFi.RSSI() + String(" dBm")); // https://www.metageek.com/training/resources/understanding-rssi.html
 
   if (lightsOn) {
+    isReset.setValue(false);
+    prop.sendAllData();
     tempSlider.check();
   }
 }
@@ -277,9 +281,15 @@ void InboxMessage::run(String a) {
   {
     prop.resetMcu();
   }
-    else if (a == "lightsOn:true")
+  else if (a == "lightsOn:true")
   {
     lightsOn = true;
+  } 
+  else if (a == "reset") 
+  {
+    lightsOn = false;
+    isReset.setValue(true);
+    prop.sendAllData();
   }
   else
   {
