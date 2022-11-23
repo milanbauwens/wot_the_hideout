@@ -159,6 +159,9 @@ void fusebox()
       prop.sendOver("Disconnect");
       prop.sendOver("Disconnect");
       prop.sendOver("Disconnect");
+      prop.sendOver("Disconnect");
+      prop.sendOver("Disconnect");
+      prop.sendOver("Disconnect");
       LIGHT = false;
       lamp.setValue(LIGHT);
       prop.sendAllData();
@@ -170,6 +173,9 @@ void fusebox()
     led.setValue(digitalRead(REDLED_PIN));
     isReset.setValue(false);
     if (!LIGHT) {
+      prop.sendOver("Fusebox");
+      prop.sendOver("Fusebox");
+      prop.sendOver("Fusebox");
       prop.sendOver("Fusebox");
       prop.sendOver("Fusebox");
       prop.sendOver("Fusebox");
