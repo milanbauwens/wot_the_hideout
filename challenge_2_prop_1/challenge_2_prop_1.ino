@@ -36,6 +36,7 @@ WifiProp prop(u8"Posters", // as MQTT client id, should be unique per client for
 PropDataLogical blinking(u8"blink", u8"yes", u8"no", true);
 PropDataLogical led(u8"led");
 PropDataLogical connection(u8"connection");
+PropDataLogical isReset(u8"isReset");
 PropDataText rssi(u8"rssi");
 
 void blink(); // define your upcoming blink method
@@ -65,6 +66,9 @@ void writeHeader(String title) {
  * --------------- */
 
 boolean SOLVED = false;
+boolean SENDPROPS =  false;
+boolean lightsOn = false; 
+
 #include <ezButton.h>
 
 const int BUTTON_PIN = 12; // Arduino pin connected to button's pin
@@ -74,8 +78,6 @@ int green_light_pin = 10;
 int blue_light_pin = 9;
 
 ezButton button(BUTTON_PIN); // create ezButton object that attach to pin 12;
-
-boolean lightsOn = false; 
 
 void setup()
 {
@@ -88,6 +90,7 @@ void setup()
   prop.addData(&led);
   prop.addData(&connection);
   prop.addData(&rssi);
+  prop.addData(&isReset);
 
   prop.begin(InboxMessage::run); // this will start a loop to check for MQTT messages
 
@@ -101,6 +104,9 @@ void setup()
   pinMode(red_light_pin, OUTPUT);
   pinMode(green_light_pin, OUTPUT);
   pinMode(blue_light_pin, OUTPUT);
+
+  isReset.setValue(true);
+  prop.sendAllData();
 }
 
 /* ---------------
@@ -160,13 +166,17 @@ void loop()
   
   if(lightsOn){
 
-    button.loop(); // MUST call the loop() function first
+    button.loop(); // MUST call the loop() function firstµ
+    isReset.setValue(false);
 
     if (SOLVED) {
       Serial.println("The button is pressed");
       digitalWrite(RELAY_PIN, HIGH); // unlock the desk slide in 10 seconds
       RGB_color(0, 255, 0); // Green
-      prop.sendOver("Posters");
+      if (!SENDPROPS) {
+        prop.sendOver("Posters");
+        SENDPROPS = true;
+      }
     }
 
     if (!SOLVED) {
@@ -177,6 +187,9 @@ void loop()
     if(button.isPressed()) {
       SOLVED = true;
     }
+  } else {
+      digitalWrite(RELAY_PIN, LOW);
+      RGB_color(0, 0, 0);
   }
 
 }
@@ -216,17 +229,19 @@ void InboxMessage::run(String a) {
     prop.sendAllData(); // all data change, we don't have to be selctive then
     prop.sendDone(a); // acknowledge prop command action
   }
-  else if (a == "posters:1")
+  else if (a == "solve")
   {
     SOLVED = true;
     Serial.println("Schuif open");
-    prop.sendOver("Posters");
   }
-  else if (a == "posters:0")
+  else if (a == "reset")
   {
     SOLVED = false;
+    SENDPROPS = false;
+    lightsOn = false;
     Serial.println("Schuif gesloten");
-    prop.sendOver("Posters");
+    isReset.setValue(true);
+    prop.sendAllData();
   }
   else if (a == "lightsOn:true")
   {
