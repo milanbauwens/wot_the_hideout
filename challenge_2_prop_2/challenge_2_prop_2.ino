@@ -36,6 +36,7 @@ WifiProp prop(u8"Frequency", // as MQTT client id, should be unique per client f
 PropDataLogical blinking(u8"blink", u8"yes", u8"no", true);
 PropDataLogical led(u8"led");
 PropDataLogical connection(u8"connection");
+PropDataLogical isReset(u8"isReset");
 PropDataText rssi(u8"rssi");
 
 void blink(); // define your upcoming blink method
@@ -67,9 +68,8 @@ void writeHeader(String title) {
  * --------------- */
 
 boolean SOLVED = false;
-boolean RESET = false;
 boolean PostersSolved = false;
-boolean SEND_OVER = false;
+boolean SENDPROPS = false;
 
 #include <Wire.h>     // include Arduino Wire library
 #include "rgb_lcd.h"  // include Seeed Studio LCD library
@@ -94,7 +94,11 @@ void setup()
   prop.addData(&blinking);
   prop.addData(&led);
   prop.addData(&connection);
+  prop.addData(&isReset);
   prop.addData(&rssi);
+
+  isReset.setValue(true);
+  prop.sendAllData();
 
   prop.begin(InboxMessage::run); // this will start a loop to check for MQTT messages
 
@@ -156,15 +160,18 @@ void loop()
   buttonState = digitalRead(buttonPin);
   if(PostersSolved){
     frequencyAction.check();
+    isReset.setValue(false);
   }
   if(!PostersSolved){
     lcd.clear();
     lcd.setRGB(0, 0, 0);
   }
-  if(SEND_OVER){
-    prop.sendOver("Frequency");
+  if (SOLVED) {
+    if(!SENDPROPS){
+      prop.sendOver("Frequency");
+      SENDPROPS = true;
+    }
   }
-
 }
 
 /* ---------------
@@ -184,7 +191,6 @@ void frequency()
       lcd.clear();
       lcd.setCursor(4, 1);
       lcd.print("Screen on");
-      SEND_OVER = true;
   }
 
   if(!SOLVED){
@@ -248,20 +254,21 @@ void InboxMessage::run(String a) {
     prop.sendAllData(); // all data change, we don't have to be selctive then
     prop.sendDone(a); // acknowledge prop command action
   }
-  else if (a == "frequency:1")
+  else if (a == "solve")
   {
     Serial.println("De frequency is correct");
     SOLVED = true;
-    prop.sendOver("Frequency");
   }
-  else if (a == "frequency:0")
+  else if (a == "reset")
   {
     Serial.println("Frequency is resetting...");
     SOLVED = false;
     frequencyAction.check();
     PostersSolved = false;
+    SENDPROPS = false;
+    isReset.setValue(true);
+    prop.sendAllData();
   }
-  
   else if (a == "postersSolved")
   {
     PostersSolved = true;
