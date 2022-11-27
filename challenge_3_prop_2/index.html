@@ -58,6 +58,12 @@
             const looped = document.getElementById("looped");
             const single = document.getElementById("single");
             const image = document.getElementById("image");
+            
+            single.forEach(videoSource, () => {
+                videoSource.addEventListener('ended', () => {
+                    videoSource.classList.add("hidden");
+                })
+            });
 
             socket.on("message", (msg) => {
                 if (msg === "static") {
