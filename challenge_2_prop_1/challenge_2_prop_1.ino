@@ -172,7 +172,7 @@ void loop()
     if (SOLVED) {
       Serial.println("The button is pressed");
       digitalWrite(RELAY_PIN, HIGH); // unlock the desk slide in 10 seconds
-      RGB_color(0, 255, 0); // Green
+      RGB_color(0, 0, 255); // Green
       if (!SENDPROPS) {
         prop.sendOver("Posters");
         SENDPROPS = true;

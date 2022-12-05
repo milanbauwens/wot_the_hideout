@@ -179,6 +179,7 @@ void InboxMessage::run(String a) {
   {
     open_lock = false;
     lock_is_opened = false;
+    lightsOn = false;
     isReset.setValue(true);
     prop.sendAllData();
     }

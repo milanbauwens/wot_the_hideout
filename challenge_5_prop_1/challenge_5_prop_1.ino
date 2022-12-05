@@ -26,7 +26,7 @@ PropAction tempSlider = PropAction(0, manageTempSlider);
 bool wifiBegun(false); // this is an internal variable to use
 const char* ssid = "WOT"; // the SSID of the network
 const char *passphrase = "enterthegame"; // the passphrase of the network
-const int propNumber = 151;
+const int propNumber = 162;
 
 // temp slider variables
 bool lightsOn = false;
