@@ -130,8 +130,6 @@ void loop()
   rssi.setValue(WiFi.RSSI() + String(" dBm")); // https://www.metageek.com/training/resources/understanding-rssi.html
 
   if (lightsOn) {
-    isReset.setValue(false);
-    prop.sendAllData();
     vent.check();
   }
 }
