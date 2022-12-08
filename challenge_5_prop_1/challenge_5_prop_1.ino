@@ -26,7 +26,7 @@ PropAction tempSlider = PropAction(0, manageTempSlider);
 bool wifiBegun(false); // this is an internal variable to use
 const char* ssid = "WOT"; // the SSID of the network
 const char *passphrase = "enterthegame"; // the passphrase of the network
-const int propNumber = 162;
+const int propNumber = 151;
 
 // temp slider variables
 bool lightsOn = false;
@@ -157,8 +157,6 @@ void loop()
   rssi.setValue(WiFi.RSSI() + String(" dBm")); // https://www.metageek.com/training/resources/understanding-rssi.html
 
   if (lightsOn) {
-    isReset.setValue(false);
-    prop.sendAllData();
     tempSlider.check();
   }
 }
@@ -168,10 +166,6 @@ void loop()
  * --------------- */
 
 void manageTempSlider() {
-  // Turn off the display:
-  // Turn on the display:
-
-
   temp1 = floor(analogRead(adcPin) /33.8);
   temp2 = floor(analogRead(adcPin2) /10.3);
 
@@ -201,7 +195,7 @@ void manageTempSlider() {
      lcd.setCursor(5,0);
      lcd.print(String(temp1) + "," + String(temp2) + " *C");
    }
-   previousMillis2 = currentMillis2;   
+   previousMillis2 = currentMillis2;
   }
 
   if (temp1 <= 13){
