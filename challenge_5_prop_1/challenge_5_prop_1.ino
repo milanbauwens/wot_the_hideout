@@ -42,9 +42,9 @@ const boolean breathMode = true;
 int ledState = LOW;  
 
 
-const int colorR = 255;
-const int colorG = 255;
-const int colorB = 255;
+const int colorR = 0;
+const int colorG = 0;
+const int colorB = 0;
 
 int ledFadeValue = 0;
 int ledFadeStep = 5;
@@ -281,6 +281,10 @@ void InboxMessage::run(String a) {
   } 
   else if (a == "reset") 
   {
+    lcd.clear();
+    lcd.setRGB(0,0,0);
+    ledState = LOW;
+    analogWrite(ledPin, ledState);
     lightsOn = false;
     isReset.setValue(true);
     prop.sendAllData();
