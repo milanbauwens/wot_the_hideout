@@ -30,9 +30,32 @@
             .hidden {
                 display: none;
             }
+            .timer {
+                position: absolute;
+                top: 0;
+                right: 0;
+            }
+            #timer {
+                background-color: black;
+                color: #02fe00;
+                font-size: 2rem;
+                font-weight: 500;
+                padding: 15px;
+                border: 3px solid #02fe00;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+            }
+            .timer .redAlert {
+                color: #ff0101 !important;
+                border: 3px solid #ff0101 !important;
+            }
         </style>
     </head>
     <body>
+        <div class="timer">
+            <p id="timer">30:00</p>
+        </div>
         <video
             autoplay
             muted
@@ -58,6 +81,31 @@
             const looped = document.getElementById("looped");
             const single = document.getElementById("single");
             const image = document.getElementById("image");
+            const timer = document.getElementById("timer");
+            const timer_container = document.querySelector(".timer");
+            
+            // make timer that counts down from 30 minutes
+            let minutes = 30;
+            let seconds = 0;
+
+            setInterval(() => {
+                if (seconds == 0) {
+                    minutes--;
+                    seconds = 60;
+                }
+                seconds--;
+                if (minutes < 5) {
+                    // add redAlert class to timer
+                    timer.classList.add("redAlert");
+                }
+                timer.innerHTML = `${leadingZero(minutes)}:${leadingZero(
+                    seconds
+                )}`;
+            }, 1000);
+
+            const leadingZero = (num) => {
+                return num < 10 ? `0${num}` : num;
+            };
             
             single.forEach(videoSource, () => {
                 videoSource.addEventListener('ended', () => {
@@ -70,6 +118,7 @@
                     looped.classList.remove("hidden");
                     image.classList.add("hidden");
                     single.classList.add("hidden");
+                    timer_container.classList.remove("hidden");
                 } else if (msg === "locked") {
                     looped.classList.add("hidden");
                     image.classList.remove("hidden");
@@ -82,6 +131,10 @@
                     looped.classList.add("hidden");
                     image.classList.add("hidden");
                     single.classList.add("hidden");
+                    timer_container.classList.add("hidden");
+                } else if (msg === "timer") {
+                    minutes = 30;
+                    seconds = 0;
                 }
             });
         </script>
