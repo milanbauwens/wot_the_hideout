@@ -1,12 +1,5 @@
 import * as mqtt from "mqtt"; // import everything inside the mqtt module and give it the namespace "mqtt"
 import express from "express";
-import {
-  toggleBulb,
-  setBulb,
-  initBuld,
-  setBlackLight,
-  disconnectBulb,
-} from "./app.js";
 import fetch from "node-fetch";
 
 /* MQTT SERVER CONST */
@@ -39,20 +32,15 @@ client.on("message", (publishTopic, payload) => {
 
   if (message === "1") {
     // Turn bulb on
-    setBulb(true);
-
-    // fetch("http://localhost:3000/on", {
-    //   method: "POST",
-    // });
-
-    // client.publish(publishTopic, '1')
+  
+    fetch("http://192.168.50.112/relay/0?turn=on", {
+      method: "GET",
+    });
   } else if (message === "0") {
     // turn bulb off
-    setBulb(false)
-    // fetch("http://localhost:3000/off", {
-    //   method: "POST",
-    // });
-    // client.publish(publishTopic, '0')
+    fetch("http://192.168.50.112/relay/0?turn=off", {
+      method: "GET",
+    });
   } else {
     return;
   }

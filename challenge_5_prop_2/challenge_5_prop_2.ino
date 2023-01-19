@@ -160,8 +160,6 @@ void manageVent() {
       prop.sendOver("Vent");
       Serial.println("The key fell");
       keyFell.setValue(true);
-      lock_is_opened = false;
-      open_lock = false;
     }
   }
 }
@@ -183,11 +181,14 @@ void InboxMessage::run(String a) {
     }
   else if (a == "thermostat_solved"){
     open_lock = true;
+    prop.sendDone("Signal received from tempslide");
   }
   
     else if (a == "lightsOn:true")
   {
     lightsOn = true;
+    isReset.setValue(false);
+    prop.sendAllData();
   }
   else if (a == "ventOpen:true")
   {
