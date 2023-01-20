@@ -68,6 +68,7 @@ void writeHeader(String title) {
 boolean SOLVED = false;
 boolean SENDPROPS =  false;
 boolean lightsOn = false; 
+boolean LEDON = false;
 
 #include <ezButton.h>
 
@@ -172,7 +173,8 @@ void loop()
     if (SOLVED) {
       Serial.println("The button is pressed");
       digitalWrite(RELAY_PIN, HIGH); // unlock the desk slide in 10 seconds
-      RGB_color(0, 0, 255); // Green
+      // RGB_color(0, 0, 255); // Blue
+      blinkAction.check();
       if (!SENDPROPS) {
         prop.sendOver("Posters");
         SENDPROPS = true;
@@ -198,9 +200,12 @@ void loop()
 
 void blink()
 {
-  if (blinking.value()) {
-    led.setValue(!led.value());
-    digitalWrite(LED_BUILTIN, led.value() ? HIGH : LOW);
+  if (!LEDON) {
+    RGB_color(0, 0, 255); // Blue
+    LEDON = true;
+  } else {
+    RGB_color(0, 0, 0); // Black
+    LEDON = false;
   }
 }
 
